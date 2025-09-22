@@ -135,7 +135,7 @@ const To_Do_List = () => {
               <button
                 disabled={
                   getVisibleTodos() === completeTodoList ||
-                  getVisibleTodos() === pendingTodo
+                  getVisibleTodos() === pendingTodo 
                 }
                 onClick={() => setOpenForm(true)}
                 className={` text-white flex items-center gap-1 text-sm p-1 md:!text-lg md:!p-3 md:!px-5 rounded-md ${
