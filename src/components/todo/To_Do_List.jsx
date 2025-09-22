@@ -131,14 +131,14 @@ const To_Do_List = () => {
               Todo List
             </h1>
             <hr className="mb-10 border-2 border-gray-300 rounded-full mt-2 w-20 mx-auto" />
-            <div className="flex justify-between mb-5 sticky top-10 bg-white shadow-sm py-4 rounded-md z-50">
+            <div className="flex justify-between mb-5 sticky top-10 py-4 rounded-md z-50 flex-col gap-4 md:!flex-row bg-white">
               <button
                 disabled={
                   getVisibleTodos() === completeTodoList ||
                   getVisibleTodos() === pendingTodo
                 }
                 onClick={() => setOpenForm(true)}
-                className={` text-white flex items-center gap-1 text-sm p-1 md:!text-lg md:!p-3 md:!px-5 rounded-md ${
+                className={` text-white flex items-center justify-center gap-1 text-sm p-3 md:!text-lg md:!px-5 rounded-md ${
                   getVisibleTodos() === completeTodoList ||
                   getVisibleTodos() === pendingTodo
                     ? "bg-blue-300 text-white cursor-not-allowed"
@@ -150,7 +150,7 @@ const To_Do_List = () => {
               </button>
               <select
                 onChange={getTodoOnChange}
-                className="p-1 w-32 md:p-3 md:w-auto bg-gray-200 rounded-md outline outline-blue-400 text-blue-700"
+                className="p-2 w-full md:p-3 md:w-auto bg-gray-200 rounded-md outline outline-blue-400 text-blue-700"
                 name="category"
                 value={selectedCategory}
               >
@@ -161,68 +161,91 @@ const To_Do_List = () => {
             </div>
           </div>
 
-          <div className="p-4 flex flex-col gap-3 rounded-md bg-gray-200 min-h-80">
-            {getVisibleTodos().length === 0 ? (
-              <div className="min-h-80 flex justify-center items-center rounded-md overflow-hidden">
-                <img
-                  className="h-80 object-cover object-center"
-                  src={noFoundData}
-                  alt="No Found"
-                />
-              </div>
-            ) : (
-              getVisibleTodos().map((todo) => (
-                <div
-                  key={todo.id}
-                  className="flex flex-col md:flex-row transition-all"
-                >
-                  <label
-                    htmlFor={`${todo.id}`}
-                    className="bg-white cursor-pointer rounded-s-md flex justify-between items-center p-3 px-4 w-full"
-                  >
-                    <div className="flex items-center gap-3 w-full">
-                      <input
-                        className="h-[20px] w-[20px]"
-                        type="checkbox"
-                        id={`${todo.id}`}
-                        checked={todo.completed}
-                        onChange={() => dispatch(toggleTodo(todo.id))}
+          <div className="p-4 rounded-md bg-gray-200 min-h-80 overflow-x-auto">
+            <table className="min-w-full table-auto border-separate border-spacing-y-2">
+              <thead className="bg-white">
+                <tr className="text-left text-sm md:text-base">
+                  <th className="p-3 w-[50%]">TODO Name</th>
+                  <th className="p-3 w-[30%]">Status</th>
+                  <th className="p-3 w-[10%] text-center">Actions</th>
+                </tr>
+              </thead>
+              <tbody>
+                {getVisibleTodos().length === 0 ? (
+                  <tr>
+                    <td colSpan="3" className="text-center p-5">
+                      <img
+                        className="h-80 mx-auto object-cover object-center"
+                        src={noFoundData}
+                        alt="No Data Found"
                       />
-                      <div
-                        className={`font-bold w-auto lg:w-64 overflow-auto ${
-                          todo.completed ? "line-through" : ""
-                        }`}
-                      >
-                        {todo.todoName}
-                      </div>
-                      <div
-                        className={`ms-auto md:mx-auto px-2 py-1 rounded-md ${
-                          todo.completed
-                            ? "bg-green-200 text-green-700"
-                            : "bg-blue-100 text-blue-500"
-                        }`}
-                      >
-                        {todo.completed ? "Completed" : "Pending"}
-                      </div>
-                    </div>
-                  </label>
-                  <div className="flex items-center gap-4 bg-white rounded-e-md p-3">
-                    <div
-                      onClick={() => handleEdit(todo.id)}
-                      className="bg-blue-100 hover:bg-blue-200 cursor-pointer p-2 rounded-md text-blue-600"
+                    </td>
+                  </tr>
+                ) : (
+                  getVisibleTodos().map((todo) => (
+                    <tr
+                      key={todo.id}
+                      className="bg-white rounded-md shadow-sm text-sm md:text-base"
                     >
-                      <EditIcon />
-                    </div>
-                    <div
-                      onClick={() => handleDelete(todo.id)}
-                      className="bg-red-100 hover:bg-red-200 cursor-pointer p-2 rounded-md text-red-600"
-                    >
-                      <DeleteIcon />
-                    </div>
-                  </div>
-                </div>
-              ))
-            )}
+                      <td className="p-3 align-middle cursor-pointer">
+                        <label className="cursor-pointer" htmlFor={todo.id}>
+                          <div className="flex items-center gap-3">
+                            <input
+                              className="h-[20px] w-[20px]"
+                              type="checkbox"
+                              id={`${todo.id}`}
+                              checked={todo.completed}
+                              onChange={() => dispatch(toggleTodo(todo.id))}
+                            />
+                            <label
+                              htmlFor={`${todo.id}`}
+                              className={`font-bold overflow-auto ${
+                                todo.completed
+                                  ? "line-through text-gray-500"
+                                  : ""
+                              }`}
+                            >
+                              {todo.todoName}
+                            </label>
+                          </div>
+                        </label>
+                      </td>
+
+                      <td className="p-3 align-middle">
+                        <span
+                          className={`inline-block px-3 py-1 rounded-md text-xs md:text-sm font-semibold ${
+                            todo.completed
+                              ? "bg-green-200 text-green-700"
+                              : "bg-blue-100 text-blue-500"
+                          }`}
+                        >
+                          {todo.completed ? "Completed" : "Pending"}
+                        </span>
+                      </td>
+
+                      <td className="p-3 align-middle text-center">
+                        <div className="flex justify-center gap-3">
+                          <button
+                            onClick={() => handleEdit(todo.id)}
+                            className="bg-blue-100 hover:bg-blue-200 p-2 rounded-md text-blue-600"
+                            title="Edit"
+                          >
+                            <EditIcon fontSize="small" />
+                          </button>
+                          <button
+                            onClick={() => handleDelete(todo.id)}
+                            className="bg-red-100 hover:bg-red-200 p-2 rounded-md text-red-600"
+                            title="Delete"
+                          >
+                            <DeleteIcon fontSize="small" />
+                          </button>
+                        </div>
+                      </td>
+                    </tr>
+                  ))
+                )}
+              </tbody>
+            </table>
           </div>
         </div>
       </div>
